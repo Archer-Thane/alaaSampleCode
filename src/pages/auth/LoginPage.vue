@@ -9,7 +9,7 @@
         شما ساخته خواهد شد.
       </p>
     </q-card-section>
-    <q-form class="q-gutter-md">
+    <q-form class="q-gutter-md" @submit="submit">
       <q-card-section>
         <q-input
           square
@@ -19,6 +19,7 @@
           type="text"
           label="نام کاربری (شماره همراه)"
           hint="شماره همراه باید با ۰۹ شروع شود. مثال: ۰۹۱۲۳۴۵۶۷۸۹"
+          lazy-rules
           :rules="[
             (val) =>
               val.length == 11 || 'شماره همراه باید دقیقا یازده رقم باشد',
@@ -32,6 +33,7 @@
           type="password"
           label="رمز عبور (شماره ملی)"
           hint="شماره ملی باید دقیقا ده رقم باشد."
+          lazy-rules
           :rules="[
             (val) => val.length == 10 || 'شماره ملی باید دقیقا ده رقم باشد.',
           ]"
@@ -52,14 +54,21 @@
 </template>
 
 <script>
+// a function to ensure digits which send to backend are in english rather than persian
+const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
 import { ref } from "vue";
 export default {
   setup() {
     const alaaLogo = ref("https://nodes.alaatv.com/upload/footer-alaaLogo.png");
+    const mobile = ref("");
+    const password = ref("");
     return {
       alaaLogo,
-      mobile: ref(""),
-      password: ref(""),
+      mobile,
+      password,
+      submit() {
+        console.log(p2e(mobile.value));
+      },
     };
   },
 };
