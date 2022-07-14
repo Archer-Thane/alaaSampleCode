@@ -54,11 +54,14 @@
 </template>
 
 <script>
+// TODO: remove undigit words and clean it.
 // a function to ensure digits which send to backend are in english rather than persian
 const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+import { useQuasar } from "quasar";
 import { ref } from "vue";
 export default {
   setup() {
+    const $q = useQuasar();
     const alaaLogo = ref("https://nodes.alaatv.com/upload/footer-alaaLogo.png");
     const mobile = ref("");
     const password = ref("");
@@ -67,6 +70,12 @@ export default {
       mobile,
       password,
       submit() {
+        $q.notify({
+          color: "orange-5",
+          textColor: "white",
+          icon: "warning",
+          message: "لطفا منتظر باشید",
+        });
         console.log(p2e(mobile.value));
       },
     };
