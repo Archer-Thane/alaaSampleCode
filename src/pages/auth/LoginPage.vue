@@ -9,15 +9,20 @@
         شما ساخته خواهد شد.
       </p>
     </q-card-section>
-    <q-card-section>
-      <q-form class="q-gutter-md">
+    <q-form class="q-gutter-md">
+      <q-card-section>
         <q-input
           square
           filled
           clearable
-          v-model="email"
-          type="email"
-          label="email"
+          v-model="mobile"
+          type="text"
+          label="نام کاربری (شماره همراه)"
+          hint="شماره همراه باید با ۰۹ شروع شود. مثال: ۰۹۱۲۳۴۵۶۷۸۹"
+          :rules="[
+            (val) =>
+              val.length == 11 || 'شماره همراه باید دقیقا یازده رقم باشد',
+          ]"
         />
         <q-input
           square
@@ -25,19 +30,24 @@
           clearable
           v-model="password"
           type="password"
-          label="password"
+          label="رمز عبور (شماره ملی)"
+          hint="شماره ملی باید دقیقا ده رقم باشد."
+          :rules="[
+            (val) => val.length == 10 || 'شماره ملی باید دقیقا ده رقم باشد.',
+          ]"
         />
-      </q-form>
-    </q-card-section>
-    <q-card-actions class="q-px-md">
-      <q-btn
-        unelevated
-        color="light-green-7"
-        size="lg"
-        class="full-width"
-        label="Login"
-      />
-    </q-card-actions>
+      </q-card-section>
+      <q-card-actions class="q-px-md">
+        <q-btn
+          unelevated
+          color="orange-7"
+          size="lg"
+          type="submit"
+          class="full-width"
+          label="ورود به سامانه"
+        />
+      </q-card-actions>
+    </q-form>
   </q-card>
 </template>
 
@@ -48,6 +58,8 @@ export default {
     const alaaLogo = ref("https://nodes.alaatv.com/upload/footer-alaaLogo.png");
     return {
       alaaLogo,
+      mobile: ref(""),
+      password: ref(""),
     };
   },
 };
