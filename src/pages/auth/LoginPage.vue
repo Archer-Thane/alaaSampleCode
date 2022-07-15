@@ -57,15 +57,22 @@
 // TODO: remove undigit words and clean it.
 // a function to ensure digits which send to backend are in english rather than persian
 const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-import { useQuasar } from "quasar";
+import { api } from "boot/axios";
 import { ref } from "vue";
+import { useQuasar } from "quasar";
+import { useAuthStore } from "stores/auth";
+import { useRouter } from "vue-router";
 export default {
   setup() {
     const $q = useQuasar();
+    const authStore = useAuthStore();
     const alaaLogo = ref("https://nodes.alaatv.com/upload/footer-alaaLogo.png");
-    const mobile = ref("");
-    const password = ref("");
+    const mobile = ref("09121248393");
+    const password = ref("0016668243");
+    const data = ref(null);
+    const router = useRouter();
     return {
+      authStore,
       alaaLogo,
       mobile,
       password,
@@ -76,7 +83,34 @@ export default {
           icon: "warning",
           message: "لطفا منتظر باشید",
         });
-        console.log(p2e(mobile.value));
+        api
+          .post("login", {
+            mobile: p2e(mobile.value),
+            password: p2e(password.value),
+          })
+          .then((res) => {
+            data.value = res.data.data;
+            authStore.user = data.value.user;
+            // TODO: rather than static string, make an env file for this and read from.
+            data.value.redirectTo = data.value.redirectTo.replace(
+              "http://localhost:9000",
+              ""
+            );
+            // here we have name, if first name and lastname are defined,
+            // name it with them, else using a simple user instead.
+            let name;
+            if (authStore.user.first_name && authStore.user.last_name) {
+              name = authStore.user.first_name + " " + authStore.user.last_name;
+            } else name = "کاربر";
+            $q.notify({
+              color: "green-5",
+              textColor: "white",
+              icon: "announcement",
+              message: name + " عزیز، خوش آمدید",
+            });
+            router.push(data.value.redirectTo);
+          })
+          .catch((e) => console.log(e));
       },
     };
   },
