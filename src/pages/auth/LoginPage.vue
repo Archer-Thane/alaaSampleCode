@@ -90,7 +90,12 @@ export default {
           })
           .then((res) => {
             data.value = res.data.data;
+            // setting data for further use
             authStore.user = data.value.user;
+            authStore.setToken(data.value.access_token);
+            // setting access token for axios
+            api.defaults.headers.common["Authorization"] =
+              "Bearer " + data.value.access_token;
             // TODO: rather than static string, make an env file for this and read from.
             data.value.redirectTo = data.value.redirectTo.replace(
               "http://localhost:9000",
